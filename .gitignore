@@ -22,4 +22,17 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-/target/
+/Source/target/
+
+# LaTeX files
+
+/Documenti/*.aux
+/Documenti/*.bbl
+/Documenti/*.blg
+/Documenti/*.lof
+/Documenti/*.txt
+/Documenti/*.out
+/Documenti/*.synctex.gz
+/Documenti/*.toc
+/Documenti/*.lot
+/Documenti/*/*.aux
