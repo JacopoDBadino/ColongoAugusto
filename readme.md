@@ -1,7 +1,5 @@
 <img src="https://github.com/TdP-prove-finali/ColongoAugusto/blob/master/Documenti/resources/images/LogoLATE.png?raw=true" alt="drawing" width="100%" />
 
-# LATE
-### (Lightweight Airport Testing Environment)
 #### Augusto Colongo - Luglio 2018
 
 
