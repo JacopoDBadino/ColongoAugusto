@@ -1,3 +1,5 @@
+<img src="https://github.com/TdP-prove-finali/ColongoAugusto/blob/master/Documenti/resources/images/LogoLATE.png?raw=true" alt="drawing" width="100%" />
+
 # LATE
 ### (Lightweight Airport Testing Environment)
 #### Augusto Colongo - Luglio 2018
@@ -13,4 +15,10 @@
 
 3) Eseguire lo script faa_database_Aircraft.sql contenuto nella cartella "Database" sul proprio database MySQL
 
-4) Guardare il video che dimostra il funzionamento del programma, presente al link: INSERIRE LINK
+4) Guardare la guida all'utilizzo del software, presente al link: https://youtu.be/8avVS5Ll5BM
+
+## Alcuni screenshot dell'applicazione
+
+<img src="https://github.com/TdP-prove-finali/ColongoAugusto/blob/master/Documenti/resources/images/Interfaccia_caricaAeroporto.png?raw=true" alt="drawing" width="40%" />
+
+<img src="https://github.com/TdP-prove-finali/ColongoAugusto/blob/master/Documenti/resources/images/Interfaccia_risultati.png?raw=true" alt="drawing" width="40%" />
