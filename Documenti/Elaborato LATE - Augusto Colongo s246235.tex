@@ -1,0 +1,857 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage[rgb]{xcolor}
+
+\definecolor{giallo}{HTML}{FEEFA8}
+\definecolor{rosa}{HTML}{FAB7B3}
+\definecolor{azzurro}{HTML}{7CC2CB}
+\definecolor{verde}{HTML}{85BE62}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, calc}
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=rosa!70]
+\tikzstyle{evento} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=1.5cm, minimum height=0.5cm, text centered, text width=3cm, draw=black, fill=azzurro!70]
+\tikzstyle{azione} = [rectangle, minimum width=2cm, minimum height=0.5cm, text centered, draw=black, fill=giallo!, text width = 3 cm]
+\tikzstyle{decisione} = [diamond, minimum width=1cm, minimum height=0.5cm, aspect=3, text centered, text width = 3cm, draw=black, fill=verde!70, yshift=-0.5cm]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+\tikzstyle{line} = [thick, - , >=stealth]
+
+
+
+\begin{document}
+
+% ------------------------------------FRONTESPIZIO---------------------------------------
+
+\include{resources/frontespizio}
+
+\title{LATE \\ 
+	\large (Lightweight Airport Testing Environment)\\
+}
+
+\author{Augusto Colongo - matr.246235}
+\date{Luglio 2020}
+
+\maketitle
+
+\tableofcontents
+
+\listoffigures
+
+\listoftables
+
+\newpage
+% ------------------------------------PROPOSTA---------------------------------------
+
+\section{Proposta di progetto}
+	\subsection{Titolo della proposta}
+	
+	LATE (Lightweight Airport Testing Environment)
+	
+	\subsection{Descrizione del problema proposto}
+	
+	L'applicazione intende fornire uno strumento per il calcolo del traffico massimo che un aeroporto può gestire, attraverso un approccio simulativo in cui verranno effettuati degli stress test. L'obiettivo della simulazione è quello di fornire all'utente dei KPI \textit{(Key Performance Indicator)} atti ad analizzare la risposta dell'infrastruttura aeroportuale a valori diversi di input di traffico.
+	
+	\subsection{Descrizione della rilevanza gestionale del problema}
+	
+	Il calcolo della capacità di un'infrastruttura è di notevole rilevanza progettuale e gestionale.
+	Nel primo caso i benefici sono lampanti: in fase di progettazione si devono garantire dei minimi livelli di servizio in termini di efficienza dell'infrastruttura.
+	In fase di gestione, questo strumento potrebbe aiutare la valutazione dell'impatto di manutenzioni e imprevisti.
+	Un esempio pratico potrebbe essere la chiusura di una parte di un terminal per ristrutturazione: in tal caso si potrebbero escludere dal modello i gate coinvolti, lanciare la simulazione e valutare l'impatto dell'evento sull'efficienza aeroportuale.
+	
+	\subsection{Descrizione dei data-set per la valutazione}
+	
+	I dati che utilizzerà l'applicazione sono:
+	
+	\begin{itemize}
+	
+		\item Dati sull'infrastruttura aeroportuale:
+		
+			i dati verranno importati dai modelli aeroportuali creati dalla comunità del simulatore X-Plane che si possono trovare e scaricare gratuitamente dal sito \url{https://gateway.x-plane.com/}. Tutti gli scenari presenti sul sito sono gratis e pubblicati sotto la licenza GPLv2. L'importazione di questi scenari fornirà la mappa delle piste, delle taxiways, dei gate e le principali procedure per l'arrivo e la partenza degli aeromobili.
+		Inoltre, X-Plane ha rilasciato un software per la creazione di questi scenari che permetterà all'utente di crearne di immaginari o di apportare delle modifiche a quelli esistenti;
+		\newpage
+		\item Dati sugli aerei:
+		
+			i dati sugli aerei verranno presi da un catalogo dell'FAA \textit{(Federal Aviation Administration)} che si può trovare al seguente link: \url{https://www.faa.gov/airports/engineering/aircraft_char_database/}. I dati che ci interessano sono principalmente le dimensioni degli aeromobili e le loro velocità di atterraggio.
+	
+	\end{itemize}
+	
+	Il traffico non sarà basato su quello reale, in quanto lo scopo dell'applicazione non è di simulare una situazione preesistente, ma di sottoporre l'infrastruttura a carichi variabili in modo da calcolarne la capacità massima.
+
+	\subsection{Descrizione preliminare degli algoritmi coinvolti}
+	
+	I principali algoritmi coinvolti saranno:
+	
+	\begin{itemize}
+	
+		\item un algoritmo simulativo a eventi discreti che costituirà la parte principale dell'applicazione: simulerà l'interazione degli aeroplani con il modello aeroportuale;
+		
+		\item un algoritmo di pathfinding per fornire agli aerei un percorso da seguire per arrivare al gate e per ritornare alla pista, una volta effettuate le operazioni di sbarco e di imbarco;
+	
+	\end{itemize}
+	
+	\subsection{Descrizione preliminare delle funzionalità previste per l’applicazione software}
+	
+	L'applicazione sarà strutturata nel seguente modo:
+	
+	\begin{itemize}
+	
+	\item nella prima pagina l'utente sarà in grado di:
+	
+		\begin{itemize}
+	
+			\item Definire un percorso file per l'importazione del modello aeroportuale;
+		  
+			\item Impostare la proporzione in cui verranno scelti i vari modelli di aerei per la simulazione;
+		  
+			\item Impostare altre variabili della simulazione;
+		  
+			\item Dopo l'importazione del file, all'utente verranno presentati dei dati sull'aeroporto;
+	
+		\end{itemize}
+	
+		\item  nella seconda pagina più schermate proporranno i vari KPI e grafici che aiuteranno l'utente all'analisi dello stress test.
+	
+	\end{itemize}
+
+\newpage
+
+% ------------------------------------INTRODUZIONE---------------------------------------
+
+\section{Introduzione}
+
+Sin dall'infanzia, e anche grazie alle numerose possibilità avute di viaggiare, sono sempre stato affascinato dalle infrastrutture, che fossero aeroporti, ferrovie o autostrade. 
+
+Le mie insegnanti della scuola primaria mi trovavano spesso intento a tracciare punti, simboli e linee, apparentemente a caso, su un foglio. Ciò che sembrava casuale, aveva in realtà un senso: le prime erano città, i secondi ostacoli naturali e le terze le infrastrutture di varia natura che le connettevano.
+
+Se queste sono sommariamente le origini del mio interesse per le infrastrutture, con l’avanzare della tecnologia e degli anni, ho coltivato questa passione unendovi un aspetto ludico: alle linee, ai simboli e ai punti si sono sostituiti i più tecnologici simulatori (Microsoft Flight Simulator, Train Simulator, Euro Truck Simulator) e video game gestionali/manageriali come Open Transport Tycoon. 
+
+Le numerose ore di gioco mi hanno fatto approcciare, da una prospettiva di “utente virtuale”, a quelle che sono oggi le basi per la simulazione che presenterò in questa tesi.
+
+All'università, grazie agli esami di informatica, ho potuto dedicarmi alla programmazione e, come primo progetto personale, ho creato un programma che gestisse il traffico di un aeroporto. Essendo tuttavia il linguaggio C, nel quale programmavo, di basso livello, il risultato\footnote{\texttt{ Github}: \url{https://github.com/augustocolo/AirportManager}.} è stato limitato nelle funzionalità.
+
+Al momento di scegliere la tesi, grazie alle competenze acquisite studiando per gli esami \textit{"Tecniche di Programmazione"} e \textit{"Programmazione e Gestione della Produzione"}, ho potuto dare concretezza alla mia idea. Da questo nasce il progetto LATE, che aggiunge all’idea originale un livello di analisi, senza il quale non avrebbe potuto essere inquadrato nell’ambito gestionale.
+
+\newpage
+% ------------------------------------PROBLEMA---------------------------------------
+
+\section{Contesto di riferimento}
+	\subsection{Contesto economico}
+
+Quello dell’\textit{Air Traffic Management} (ATM) è un mercato in prevista forte crescita, prevalentemente grazie agli investimenti nel comparto tecnologico: si stima infatti un CAGR \textit{(Compound Annual Growth Rate)} del $4.20\%$, da 14.1 miliardi di dollari nel 2018 a 18.8 miliardi nel 2025, soprattutto nell’area dell’Asia-Pacifico\cite{markets_2018}.
+
+L’ATM è diviso in due rami: airspace e ground. Il primo riguarda tutte le operazioni relative al traffico “in aria”, quali l’\textit{Air Traffic Flow Management} e l’\textit{Airspace Management}, il secondo si occupa della gestione delle operazioni nelle fasi a terra (\textit{Airport Operations Management}).
+
+I nuovi strumenti tecnologici dell’ATM vengono impiegati a supporto sia di investimenti \textit{greenfield} (in un’area precedentemente non utilizzata), che \textit{brownfield} (in un’area oggetto di ammodernamento/riconversione). 
+
+Per quanto concerne l’impiego di tali tecnologie in investimenti \textit{greenfield}, caso emblematico è quello della costruzione del nuovo aeroporto di Istanbul Havalimani (operativo da aprile 2019) per cui, grazie a moderni strumenti tecnologici, sono state ridisegnate, ovviamente ottimizzandole, le rotte sino a Malm{\"o}, in Svezia. 
+
+Un’applicazione in ambito \textit{brownfield} è quella che riguarda Milano Linate, i cui i lavori di ammodernamento (creazione di nuovi spazi per gli utenti, di nuovi gate e rifacimento di una pista) in una prima fase (luglio-ottobre 2019) hanno dirottato il traffico su Milano Malpensa, per poi consentire la riapertura di nove gate (ottobre 2019) fino ad un completamento delle diverse infrastrutture e funzionalità (marzo 2021).
+	\subsection{Contesto operativo}
+L’ecosistema dell’Airport Operations Management, molto vasto, riguarda la gestione di:
+\begin{itemize}
+\item traffico di terra
+\item passeggeri
+\item risorse del ground handling
+\item arrivi e partenze
+\item manutenzione
+\end{itemize}
+
+Dotarsi dei più evoluti sistemi tecnologici in tutti questi comparti è essenziale per gli \textit{stakeholders} dell’aviazione: 
+\begin{itemize}
+\item per le compagnie aeree, perché permette di ridurre al minimo il \textit{turnaround time} (o tempo di rotazione): il periodo che trascorre dall’atterraggio di un aereo al suo successivo decollo, nel quale non genera reddito ma solo costi (tasse aeroportuali, costi di ammortamento, costi fissi). Una caratteristica delle compagnie low cost è, infatti, la massima riduzione del turnaround time;
+\item per i gestori degli aeroporti, perché permette di aumentare l’efficienza dell’infrastruttura, incrementando il numero di aerei che possono essere processati nello stesso tempo;
+\item per i contractor aeroportuali cioè coloro che forniscono servizi all’aeroporto, perché possono fare stime precise sulle proprie necessità, in termini di personale e di mezzi.
+\end{itemize}
+
+È quindi necessario dotarsi di sistemi che possano prevedere la capacità di un aeroporto, in modo da poter valutare l’efficienza delle infrastrutture e adottare accorgimenti giusti per migliorarla.
+
+\subsection{Approccio simulativo}
+I sistemi attualmente in commercio sono di tipo simulativo: un ottimo prodotto è CAST\footnote{\texttt{ CAST}: \url{https://arc.de/cast-express-simulation/}.} di Airport Research Center, sviluppato in collaborazione con Eurocontrol e alcuni tra i maggiori aeroporti europei.
+
+Una loro caratteristica comune è l’utilizzo di scenari preimpostati derivati da situazioni di traffico reali. Questo approccio sconta tuttavia il limite di non fornire informazioni precise sulla capacità teorica massima dell’aeroporto preso in considerazione. 
+Ciò che invece LATE si propone di fare, è applicare la tecnica dello stress testing, sottoponendo il modello aeroportuale ad un aumento progressivo dei carichi per constatarne la risposta. 
+Meno pratico e più teorico, non avendo fini commerciali, il mio approccio è più vasto, esamina più possibilità e dà una visione più ampia: stessa metodologia simulativa, obiettivi simili, approccio differente.
+
+\newpage
+
+\section{Dataset}
+
+	\subsection{Informazioni aeroportuali}
+	
+		Come già detto in precedenza, LATE ottiene le informazioni sull’aeroporto che deve simulare a partire da un formato open-source sviluppato dalla Laminar Research, software-house che si occupa dello sviluppo del simulatore X-Plane.
+		
+		La comunità del videogioco è molto attiva, perciò quasi tutti gli aeroporti sono creati dagli utenti stessi. Dopo una fase di testing, i nuovi aeroporti sono pubblicati sul sito X-Plane Gateway e vengono inclusi nelle release successive del software.
+		 
+		I creatori degli scenari utilizzano il software World Editor che, mediante un’interfaccia grafica, genera un file in formato .apt le cui specifiche sono riportate online\footnote{\texttt { Specifiche formato apt}:\url{http://developer.x-plane.com/wp-content/uploads/2019/04/XP-APT-1100-Spec_revised_04-11-2019.pdf}.}. La versione utilizzata è la 1130, pubblicata l'11 Aprile 2019.
+		Il file va interpretato riga per riga, ognuna inizia con un \textbf{row code} che specifica il tipo di informazione che lo seguirà. \textit{(Vedere tabella \ref{tab:apt})}
+
+		LATE importa solo alcune informazioni, utilizzando esclusivamente quelle funzionali allo svolgimento della simulazione e tralasciando, per esempio, quelle di natura grafica. Inoltre, durante l'importazione calcola delle informazioni derivate, tra le quali la lunghezza delle piste e delle taxiway.
+
+		\begin{table}[p]
+				\centering
+		\caption{Contenuto importato dal formato .apt}	
+
+\label{tab:apt}
+				
+		
+				\bgroup
+				\def\arraystretch{1.5}
+				\resizebox{\linewidth}{!}{%
+				\begin{tabular}{ c | c | c | c }
+		
+					\toprule
+					
+					\textbf{Row code} & \textbf{Gruppo} & \textbf{Contenuto} & \textbf{Informazioni} \\
+					
+					\midrule
+		
+					1 & Aeroporto & Informazioni & Elevazione (in piedi)\\
+		
+					 & & & Codice ICAO\\
+		
+		 			& & & Nome\\
+		
+					\hline
+					
+					1302 & Aeroporto & Metadati & Codice IATA\\
+					
+					& & & Città\\
+					
+					& & & Nazione\\
+					
+					\hline
+					
+					100 &  Pista di atterraggio & Informazioni & Numero\\
+					
+					& & & Coordinate geografiche\\
+					
+					& & & Larghezza\\
+					
+					\hline
+					
+					1000 &  Traffic flow & Identificativo & \\
+					
+					\hline
+					
+					1110 &  Traffic flow & Pista utilizzata & Numero\\
+					
+					 &    &   &   Utilizzo (Arrivi/Partenze)\\
+					
+					\hline
+					
+					1201 & Taxiways & Nodo & Identificativo \\
+					
+					& & & Coordinate geografiche\\
+					
+					\hline
+					
+					1202 & Taxiways & Arco & Identificativi nodi agli estremi \\
+					
+					& & &  Direzione\\
+					
+					\hline
+					
+					1300 & Gate & Informazioni & Identificativo \\
+					
+					& & &  Coordinate geografiche\\
+					
+					& & &  Tipologia (Gate/Tie down)\\
+					
+					\hline
+					
+					1300 & Gate & Metadati & Dimensioni \\
+					
+					& & &  Tipologia di traffico\\
+					
+					\bottomrule
+		
+				\end{tabular}%
+				}
+
+		
+				\egroup
+		
+			
+			
+		\end{table}
+
+
+	\subsection{Informazioni sugli aeromobili}
+		Le informazioni sugli aeromobili utilizzate da LATE provengono da un database\footnote{\texttt{ Database FAA}: \url{https://www.faa.gov/airports/engineering/aircraft_char_database}.} fornito dalla FAA \textit{(Federal Aviation Administration)}, agenzia che si occupa della regolamentazione dell’aviazione civile statunitense. Il database è incluso nell’appendice 1 del regolamento per la progettazione di aeroporti civili e contiene le caratteristiche dei modelli autorizzati a volare negli Stati Uniti.
+		
+		Come prima cosa ho provveduto a pulire la tabella: ho eliminato tutte le righe con campi mancanti, riducendo il numero di aerei da 873 a 317. Per semplificare l’utilizzo dell’applicazione ne ho selezionati 26, che ho evidenziato con il campo \textbf{Relevant}, e che potranno essere scelti dall'utente.
+		
+		Essendo un database statunitense, il compito successivo è stato quello di convertire le unità di misura dal sistema imperiale/areonautico al sistema metrico (e questo per tutti i campi, anche quelli che non sono impiegati da LATE). Ho utilizzato i seguenti fattori:
+		\begin{center}
+				1 $m/s$ = 1.94384 $kts$ \\
+				1 $m$ = 3.28084 $ft$ \\
+				1 $kg$ = 2.2046 $lb$ \\
+				1 $m^2$ = 10.763 $sqft$ \\
+		\end{center}
+
+		Infine ho importato, utilizzando il software DataGrip dell’azienda JetBrains, il file, fornito in formato .xlsx, in un database MySQL, il cui script di inizializzazione è disponibile al link: $inserisci link$. 
+
+		Nella tabella \ref{tab:mysql} sono riportati i campi dello schema \textit{Aircraft} presente sul database MySQL.
+
+\begin{table}[H]
+
+\caption{Campi MySQL utilizzati da LATE}
+\label{tab:mysql}
+
+\bgroup
+\def\arraystretch{1.5}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{c|c|c}
+\toprule
+\textbf{Campo MySQL} & \textbf{Tipo MySQL} & \textbf{Descrizione}\\
+\midrule
+Manufacturer & VARCHAR(64) & Nome del produttore \\
+Model & VARCHAR(64) & Nome del modello \\
+Relevant & TINYINT(1) & Flag per filtrare gli aerei più significativi \\
+ApproachSpeedMetersPerSecond & DOUBLE & Velocità di avvicinamento alla pista \\
+WingspanMeters & DOUBLE & Apertura alare \\
+MaximumTakeOffWeightKilograms & DOUBLE & Peso massimo di decollo\\
+\bottomrule
+\end{tabular}%
+}
+
+\egroup
+\end{table}
+
+\newpage
+% ------------------------------------APPLICAZIONE---------------------------------------
+
+
+\section{Applicazione e algoritmi}
+
+	\subsection{Struttura progetto}
+
+Il progetto LATE contiene 7 package, composti da 22 classi e 4 enum.\\ Ulteriori informazioni sul contenuto dei package si trovano nella tabella \ref{tab:packages}, mentre i diagrammi UML delle classi sono riportati nelle figure \ref{fig:lateristretto}, \ref{fig:model}, \ref{fig:airpModel}, \ref{fig:planeModel}, \ref{fig:dataImport} e \ref{fig:DAO}.
+
+\begin{table}[H]
+\centering
+\caption{Schema dei package}
+\label{tab:packages}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l|r|r|l}
+\toprule
+\textbf{Nome package} & \textbf{\# classi} & \textbf{\# enum} & \textbf{Contenuto}                  \\ \midrule
+LATE          & 4                  & 0                & Interfaccia grafica                 \\
+model         & 3                  & 1                & Simulazione                         \\
+airportModel  & 6                  & 3                & Modello aeroportuale                \\
+dataImport    & 2                  & 0                & Importazione modello aeroportuale   \\
+planeModel    & 4                  & 0                & Aerei e voli                        \\
+DAO           & 3                  & 0                & Connessione al database degli aerei \\ 
+utility&1&0&Utility functions\\ \bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{figure}[H]
+\caption{Package LATE}
+ \label{fig:lateristretto}
+\hfill \includegraphics[height=\textheight]{resources/images/UML/Package LATE_RISTRETTO.png} \hspace*{\fill}
+\end{figure}
+
+\begin{figure}[H]
+\caption{Package model}
+ \label{fig:model}
+\hfill \includegraphics[height=\textheight]{resources/images/UML/Package model.png} \hspace*{\fill}
+\end{figure}
+
+\begin{figure}[H]
+\caption{Package airportModel}
+ \label{fig:airpModel}
+\hfill \includegraphics[height=\textheight]{resources/images/UML/Package airportModel.png} \hspace*{\fill}
+\end{figure}
+
+\begin{figure}[H]
+\caption{Package planeModel}
+ \label{fig:planeModel}
+\hfill \includegraphics[height=\textheight]{resources/images/UML/Package planeModel.png} \hspace*{\fill}
+\end{figure}
+
+\begin{figure}[H]
+\caption{Package dataImport}
+ \label{fig:dataImport}
+\hfill \includegraphics[width=0.5\textwidth]{resources/images/UML/Package dataImport.png} \hspace*{\fill}
+\end{figure}
+
+\begin{figure}[H]
+\caption{Package DAO}
+ \label{fig:DAO}
+\hfill \includegraphics[width=0.5\textwidth]{resources/images/UML/Package DAO.png} \hspace*{\fill}
+\end{figure}
+
+
+	\subsection{Algoritmo simulativo}
+
+Ho scelto per questa simulazione un algoritmo a eventi discreti in cui gli aerei (rappresentati dalla classe \textit{Flight}) entrano ed escono dal sistema per mezzo degli eventi \textit{ REQUEST RUNWAY ARRIVAL} e \textit{AIRBORNE}. \\ I parametri della simulazione non modificabili attraverso l’interfaccia grafica sono:
+\begin{itemize}
+	\item Simulation time: 23 ore (finestra di simulazione, ovvero dopo quante ore simulate il programma andrà in timeout);
+
+	\item Go around time: 10 minuti (durata dell'azione di Go Around);
+
+	\item Incoming time: 10 minuti (separazione temporale tra gli eventi \textit{REQUEST RUNWAY ARRIVAL} e \textit{ASK LANDING CLEARANCE});
+
+	\item Wait on ground time: 20 secondi (tempo di attesa a terra nel caso in cui non sia possibile eseguire l'azione richiesta);
+
+	\item Passenger turnaround time ($t_{paxTurnaround}$): 30 minuti (durata delle operazioni di sbarco e imbarco dei passeggeri);
+
+	\item Taxi speed ($v_{taxi}$): 20 $kts$ = 10.289 $m/s$  (velocità di rullaggio degli aeromobili);
+
+	\item Decelerazione media sulla pista ($dec_{pista}$): 2.012 $m/{s^2}$
+
+ottenuta da una media dei dati calcolati nell'articolo "Computer Simulation Model for Airplane Landing-Performance Prediction"\cite{Kim1996}.
+\end{itemize}
+
+
+Dai parametri sopra citati e dal modello otteniamo altre misure:
+\begin{itemize}
+	\item Landing time ($t_{landing}$): tempo che intercorre tra gli eventi \textit{ASK LANDING CLEARANCE} e \textit{LEAVING RUNWAY}
+
+	\begin{align}
+	t_{landing} = t_{runway} + t_{approach}\\
+	t_{approach} = \frac{d_{goAround}}{v_{approach}}\\
+	t_{runway} = t_{decelerazione} + t_{taxi}\\
+	t_{decelerazione} = \frac{v_{approach} - v_{taxi}}{dec_{pista}}\\
+	t_{taxi} = v_{approach} \cdot  t_{decelerazione} - \frac{1}{2}  \cdot   dec_{pista} \cdot   t_{decelerazione}^2
+	\end{align}
+
+	\newpage
+
+	\item Turnaround time ($t_{turnaround}$): tempo delle operazioni dell'aeromobile al gate
+
+\begin{align}
+	t_{turnaround} = t_{paxTurnaround} + t_{rifornimento}\\
+	t_{rifornimento} = \frac{m_{carburante}}{D_{carburante}} \cdot v_{rifornimento}\\
+	m_{carburante} \approx 0.17 MTOW_{aereo}
+\end{align}
+	
+	in cui $D_{carburante} \approx $  0.719 $kg/L$ \cite{avgas_wikipedia} e $v_{rifornimento}\approx $ 50 $L/s$\cite{austerman_1997}.
+
+\end{itemize}
+
+	Nelle figure \ref{fig:flow1}, \ref{fig:flow2} e \ref{fig:flow3} sono riportati i flowchart del processo di attraversamento dell'infrastruttura.
+
+\begin{figure}[h]
+
+\caption{Arrivo e atterraggio}
+
+\label{fig:flow1}
+
+\begin{tikzpicture}[node distance=2cm]
+
+\node (start) [startstop] {Inizio};
+
+\node (rwyarrival) [evento, below of = start] {REQUEST RUNWAY ARRIVAL};
+
+\node (assign1) [azione, below of = rwyarrival] {Assegna una pista per l'atterraggio};
+
+\node (askland) [evento, below of = assign1] {ASK LANDING CLEARANCE};
+
+\node (decis1) [decisione, below of = askland] {La pista assegnata è libera?};
+
+\node (atterra) [azione, below of = decis1] {Atterra};
+
+\node (goaround) [azione, left of = askland, xshift = -3cm] {Go around};
+
+\draw [arrow] (start) -- (rwyarrival);
+
+\draw [arrow] (askland) -- (decis1);
+
+\draw [arrow] (rwyarrival) -- (assign1);
+
+\draw [arrow] (assign1) -- (askland);
+
+\draw [arrow] (goaround) -- (askland);
+
+\draw [arrow] (decis1) -- node[anchor=west] {sì} (atterra);
+
+\draw [arrow] (decis1) -| node[anchor=north west] {no} (goaround);
+
+\coordinate (belowAtterra) at ($(atterra.south) + (0,-1.0cm)$);
+
+\draw [arrow] (atterra) -- (belowAtterra);
+
+
+\end{tikzpicture}
+
+
+\end{figure}
+
+
+\begin{figure}[p]
+
+\caption{Spostamenti e operazioni di terra}
+
+\label{fig:flow2}
+
+\resizebox{\linewidth}{!}{%
+
+\begin{tikzpicture}[node distance=2cm]
+
+\node (leaverunway) [evento, below of = atterra] {LEAVING RUNWAY};
+
+\node (decis2) [decisione, below of = leaverunway] {C'è un gate libero?};
+
+\node (aspetta) [azione, left of = leaverunway, xshift = -3cm] {Aspetta};
+
+\node (pathfind) [azione, below of = decis2] {Calcola percorso al gate};
+
+\node (decis3) [decisione, below of = pathfind] {Il prossimo arco è libero?};
+
+\node (escipista) [azione, below of = decis3] {Libera la pista};
+
+\draw [arrow] (leaverunway) -- (decis2);
+
+\draw [arrow] (decis2) -- node[anchor=west] {sì} (pathfind);
+
+\draw [arrow] (aspetta) -- (leaverunway);
+
+\draw [arrow] (pathfind) -- (decis3);
+
+\draw [arrow] (decis3) -- node[anchor=west] {sì} (escipista);
+
+\draw [arrow] (decis3) -| node[anchor=south west] {no} (aspetta);
+
+\draw [arrow] (decis2) -| node[anchor= south west] {no} (aspetta);
+
+\coordinate (aboveLeaverunway) at ($(leaverunway.north) + (0,1.0cm)$);
+
+\coordinate (belowEscipista) at ($(escipista.south) + (0,-1.0cm)$);
+
+\draw [arrow] (aboveLeaverunway) -- (leaverunway);
+
+\node (arrivedtonode) [evento, below of = escipista]{ARRIVED TO NODE};
+
+\node (decis4) [decisione, below of = arrivedtonode]{Sei arrivato al nodo più vicino al gate?};
+
+\node (decis5) [decisione, below of = decis4, yshift = -1cm]{Il prossimo arco è libero?};
+
+\node (arrivedtogate) [evento, left of = decis5, xshift = -4cm]{ARRIVED TO GATE};
+
+\node (ground) [azione, below of = arrivedtogate]{Operazioni di terra};
+
+\node (requestrwy) [evento, below of = ground]{REQUEST RUNWAY DEPARTURE};
+
+\node (spostati) [azione, below of = decis5]{Prosegui verso il prossimo nodo};
+
+\node (aspetta2) [azione, right of = decis5, xshift = 4cm]{Aspetta};
+
+\node (assign2) [azione, below of = spostati]{Assegna una pista per il decollo e calcola percorso};
+
+\draw [arrow] (arrivedtonode) -- (decis4);
+
+\draw [arrow] (decis4) -- node[anchor= west] {no} (decis5);
+
+\draw [arrow] (arrivedtogate) -- (ground);
+
+\draw [arrow] (ground) -- (requestrwy);
+
+\draw [arrow] (decis4) -| node[anchor=south west] {sì} (arrivedtogate);
+
+\coordinate (eastDecis4) at ($(decis4.east) + (4.0cm,0)$);
+
+\draw [arrow] (decis5) -- node[anchor=south east] {no} (aspetta2);
+
+\draw [arrow] (eastDecis4) |- (arrivedtonode);
+
+\draw [arrow] (decis5) -- node[anchor= west] {sì} (spostati);
+
+\draw [line] (spostati) -|  (eastDecis4);
+
+\draw [line] (aspetta2) |- (eastDecis4);
+
+\draw [arrow] (requestrwy) -- (assign2);
+
+\draw [arrow] (escipista) -- (arrivedtonode);
+
+\coordinate (belowAssign2) at ($(assign2.south) + (0,-1.0cm)$);
+
+\draw[arrow] (assign2) -- (belowAssign2);
+
+\end{tikzpicture}%
+}
+
+\end{figure}
+
+
+
+\begin{figure}[p]
+
+
+
+\caption{Spostamenti e decollo}
+
+\label{fig:flow3}
+
+\resizebox{!}{\dimexpr\textheight-\lineskip\relax}{%
+\hspace{1.5cm}
+\begin{tikzpicture}[node distance=2cm]
+
+\node (leavegate) [evento] {LEAVING GATE};
+
+\node (decis6) [decisione, below of = leavegate] {Il prossimo arco è libero?};
+
+\node (spostati2) [azione, below of = decis6]{Esci dal gate};
+
+\node (aspetta3) [azione, left of = leavegate, xshift = -4cm]{Aspetta};
+
+\node (arrivedtonode2) [evento, below of = spostati2]{ARRIVED TO NODE};
+
+\node (decis7) [decisione, below of = arrivedtonode2]{Sei arrivato al nodo più vicino alla pista?};
+
+\node (decis8) [decisione, below of = decis7, yshift = -1cm]{Il prossimo arco è libero?};
+
+\node (aspetta4) [azione, right of = decis8, xshift = 4cm]{Aspetta};
+
+\node (spostati3) [azione, below of = decis8, yshift = -0.2cm]{Prosegui verso il prossimo nodo};
+
+\node (takeoffclearance) [evento, below of = spostati3]{ASK TAKEOFF CLEARANCE};
+
+\node (decis9) [decisione, below of = takeoffclearance, yshift = -1cm]{La pista è libera?};
+
+\node (aspetta5) [azione, right of = takeoffclearance, xshift = 4cm]{Aspetta};
+
+\node (decolla) [azione, below of = decis9]{Decolla};
+
+\node (airborne) [evento, below of = decolla]{AIRBORNE};
+
+\node (end) [startstop, below of = airborne]{Fine};
+
+\coordinate (aboveLeavegate) at ($(leavegate.north) + (0,1.0cm)$);
+
+\coordinate (eastDecis7) at ($(decis7.east) + (4.0cm,0)$);
+
+\draw[arrow] (aboveLeavegate) -- (leavegate);
+
+\draw[arrow] (leavegate) -- (decis6);
+
+\draw[arrow] (decis6) --  node[anchor= west] {sì} (spostati2);
+
+\draw[arrow] (spostati2) -- (arrivedtonode2);
+
+\draw[arrow] (arrivedtonode2) -- (decis7);
+
+\draw[arrow] (decis7) --  node[anchor= west] {no} (decis8);
+
+\draw[arrow] (decis8) --  node[anchor= east] {sì} (spostati3);
+
+\draw[arrow] (takeoffclearance) -- (decis9);
+
+\draw[arrow] (decis9) --  node[anchor= east] {sì} (decolla);
+
+\draw[arrow] (decolla) -- (airborne);
+
+\draw[arrow] (airborne) -- (end);
+
+\draw[arrow] (decis6) -|   node[anchor=south west] {no} (aspetta3);
+
+\draw[arrow] (aspetta3) -- (leavegate);
+
+\draw[arrow] (decis8) --  node[anchor=south ] {no} (aspetta4);
+
+\draw[arrow] (decis9) -|  node[anchor= north] {no} (aspetta5);
+
+\draw[arrow] (aspetta5) -- (takeoffclearance);
+
+\coordinate (eastDecis7) at ($(decis7.east) + (4.0cm,0)$);
+
+\draw[line] (spostati3) -| (eastDecis7);
+
+\draw[line] (aspetta4) |- (eastDecis7);
+
+\draw[arrow] (eastDecis7) |-  (arrivedtonode2);
+
+\coordinate (westDecis8) at ($(decis8.west) + (-4.0cm,0)$);
+
+\draw[line] (decis7) -|  node[anchor=south west] {sì} (westDecis8);
+
+\draw[arrow] (westDecis8) |- (takeoffclearance);
+
+\end{tikzpicture}%
+
+}
+
+
+\end{figure}
+
+
+
+
+\newpage
+
+	\subsection{Algoritmo di pathfinding}
+	Gli aerei, per spostarsi dalla pista al gate e viceversa, devono seguire un percorso attraverso il grafo pesato e orientato formato dalle taxiway. Per calcolarlo, ho deciso di utilizzare l'algoritmo \textit{Dijkstra's Shortest Path First}\cite{Dijkstra1959}, nell'implementazione della libreria jGraphT, il cui metodo \textit{getPath} permette di ottenere un oggetto di tipo \textit{GraphPath} contenente la lista di archi da percorrere.
+
+\newpage
+% ------------------------------------INTERFACCIA---------------------------------------
+
+\section{Interfaccia dell'applicazione}
+
+L'interfaccia dell'applicazione è composta da due schermate: una in cui si può scegliere il modello aeroportuale (fig.\ref{fig:avvio1}) e impostare le variabili di simulazione (fig.\ref{fig:avvio2}), un'altra in cui vengono proposti i risultati (fig.\ref{fig:schermataRisultati}).\\
+
+
+I risultati che vengono presentati all'utente sono di due tipologie: 
+\begin{itemize}
+	\item la prima formulata per comparare i risultati delle varie simulazioni, divisi in due categorie di competenza:
+		\begin{itemize}
+		\item Intertempi: \textit{Tempo di interarrivo nello spazio aereo}, \textit{Intertempo tra atterraggi medio}, \textit{Intertempo tra decolli medio}, \textit{Takt time piste medio};
+		\item Cycle time: \textit{Numero di Go Around}, \textit{Tempo atteso a terra medio}, \textit{Cycle Time aeroportuale medio}, \textit{Cycle Time complessivo medio};
+		\end{itemize}
+	\item la seconda per vedere in dettaglio le singole simulazioni, suddivisa in tre categorie di competenza:
+		\begin{itemize}
+			\item Generale: \textit{Numero di aerei}, \textit{Percentuale di voli riusciti}, \textit{Throughput delle fasi};
+			\item Piste: \textit{Takt Time} e \textit{Utilizzo percentuale};
+			\item Gate: \textit{Utilizzo percentuale} e \textit{Tempo medio di permanenza}.
+		\end{itemize}
+\end{itemize}
+
+\begin{figure}[H]
+\caption{Schermata di avvio}
+ \label{fig:avvio1}
+\hfill \includegraphics[height=0.42\textheight]{resources/images/Interfaccia_inizio.png} \hspace*{\fill}
+\end{figure}
+
+\begin{figure}[H]
+\caption{Schermata di avvio dopo il caricamento del modello aeroportuale}
+ \label{fig:avvio2}
+\hfill \includegraphics[height=0.42\textheight]{resources/images/Interfaccia_caricaAeroporto.png}\hspace*{\fill}
+\end{figure}
+
+\begin{figure}[H]
+\caption{Schermata dei risultati}
+ \label{fig:schermataRisultati}
+\hfill \includegraphics[height=0.42\textheight]{resources/images/Interfaccia_risultati.png}\hspace*{\fill}
+\end{figure}
+
+
+\newpage
+
+% ------------------------------------RISULTATI---------------------------------------
+
+\section{Esempio}
+
+\subsection{Parametri della simulazione}
+\begin{itemize}
+
+\item Modello aeroportuale utilizzato: Torino Caselle\footnote{\texttt{ LIMF by carlosr}: \url{https://gateway.x-plane.com/scenery/page/LIMF}.}
+\item Traffic flow: South Flow
+\item Arrivi per ora iniziali: 1
+\item Incremento per ogni simulazione: 1
+\item Numero di simulazioni: 50
+\item Distanza richiesta di atterraggio: 2 $nm$
+\item Probabilità aerei:
+\begin{itemize}
+\item Airbus A321neo: $8.33\%$
+\item Boeing 737-800: $25.00\%$
+\item Airbus A320neo: $25.00\%$
+\item Airbus A319neo: $8.33\%$
+\item McDonnell Douglas MD-90-30: $8.33\%$
+\item Embraer 190 Standard: $8.33\%$
+\item British Aerospace 146-300: $8.33\%$
+\item Embraer 170 Long Range: $8.33\%$
+\end{itemize}
+
+\end{itemize}
+
+\subsection{Analisi complessiva}
+
+L'analisi dei risultati forniti dall'applicazione deve essere effettuata iniziando dai dati d'insieme contenuti nella scheda \textit{Analisi andamento simulazioni}. Nel caso in questione, possiamo notare che le curve degli intertempi (figura \ref{fig:caselleIntertempi}) hanno un andamento inversamente proporzionale al numero della simulazione fino alla n°8. A seguire, i tre grafici \textit{Intertempo tra atterraggi medio}, \textit{Intertempo tra decolli medio} e \textit{Takt Time piste medio} fluttuano attorno ad un valore costante. 
+
+In figura \ref{fig:caselleCT}, possiamo vedere come l'andamento dei grafici si modifichi a partire dalla simulazione n°8, ad eccezione del \textit{Cycle Time aeroportuale medio}.
+
+
+L'analisi di queste due schermate ci porta ad una conclusione: la capacità dell'aeroporto Torino Caselle, in queste condizioni, è di circa 8 $aerei/ora$. Inoltre, l'infrastruttura di terra sembra non essere satura, infatti il \textit{Cycle Time aeroportuale medio} non aumenta proporzionalmente al traffico gestito.
+
+\begin{figure}[H]
+\caption{Esempio Torino Caselle: intertempi}
+ \label{fig:caselleIntertempi}
+\hfill \includegraphics[height=0.44\textheight]{resources/images/Risultati_01.png}\hspace*{\fill}
+\end{figure}
+\begin{figure}[h]
+\caption{Esempio Torino Caselle: cycle time}
+ \label{fig:caselleCT}
+\hfill \includegraphics[height=0.44\textheight]{resources/images/Risultati_02.png}\hspace*{\fill}
+\end{figure}
+
+\subsection{Analisi nel dettaglio}
+
+Nella scheda \textit{Analisi dettagliata simulazioni} si devono andare a verificare le \textit{assumption} effettuate nel punto precedente.
+
+\begin{itemize}
+	\item \textbf{Simulazione numero 9}: il grafico in figura \ref{fig:caselle9TP} corrobora le ipotesi precedenti, ovvero che il throughput massimo gestibile dall'aeroporto sia di 8 $aerei/ora$ e che il bottleneck si trovi tra le fasi \textit{Arrival} e \textit{Landing}.
+	\item \textbf{Simulazione numero 45}: il grafico in figura \ref{fig:caselle45TP} è un'ulteriore conferma, con dati ancora più evidenti, di quanto detto al punto precedente. In figura \ref{fig:caselle45GT} sono presenti i grafici che ci permettono di analizzare le performance dei gate, non sfruttati appieno (utilizzo compreso tra 10\% e 40\%).
+	
+\end{itemize}
+
+
+
+\begin{figure}[H]
+\caption{Esempio Torino Caselle: throughput simulazione 9}
+ \label{fig:caselle9TP}
+\hfill \includegraphics[height=0.44\textheight]{resources/images/Risultati_03.png}\hspace*{\fill}
+\end{figure}
+
+\begin{figure}[H]
+\caption{Esempio Torino Caselle: throughput simulazione 45}
+ \label{fig:caselle45TP}
+\hfill \includegraphics[height=0.44\textheight]{resources/images/Risultati_04.png}\hspace*{\fill}
+\end{figure}
+
+\begin{figure}[H]
+\caption{Esempio Torino Caselle: situazione gates simulazione 45}
+ \label{fig:caselle45GT}
+\hfill \includegraphics[height=0.44\textheight]{resources/images/Risultati_06.png}\hspace*{\fill}
+\end{figure}
+
+
+\newpage
+
+
+% ------------------------------------CONCLUSIONI---------------------------------------
+
+\section{Conclusioni e possibili sviluppi}
+
+In conclusione, mi ritengo soddisfatto della riuscita del progetto che valuto rispondente agli obiettivi che mi ero prefissato. 
+
+Naturalmente le funzionalità della simulazione sono ampliabili e qui di seguito propongo quali, a mio avviso, potrebbero essere alcune possibilità di sviluppo:
+\begin{itemize}
+\item trasformerei il modello simulativo in una libreria, creando interfacce e classi astratte. Questo permetterebbe più agevolmente a collaboratori esterni di aggiungere funzionalità o di personalizzare quelle già esistenti, in pieno stile open-source;
+
+\item migliorerei il processo di avvicinamento alla pista che, come si è visto dall'esempio sopra riportato, è il bottleneck della simulazione. \\Esistono metodologie sofisticate, adottate negli aeroporti più trafficati, che permettono di aumentarne il throughput;
+
+\item introdurrei i ground services, che aggiungerebbero un livello di definizione in più all'analisi dei processi di turnaround degli aerei.
+
+
+\end{itemize}
+
+Tuttavia, ritengo il progetto valido, infatti: 
+\begin{itemize}
+\item è veloce e leggero: riesce a eseguire un gran numero di simulazioni in poco tempo (in media 5 $ms$ per simulazione);
+
+\item è user friendly: l’esperienza per gli utenti è semplificata dalla presentazione dei risultati in forma grafica, molto intuitiva;
+
+\item è funzionale: fornisce informazioni dettagliate sulla complessità dei processi che regolano l’attraversamento di un’infrastruttura aeroportuale.  
+\end{itemize}
+\newpage
+
+\bibliography{resources/fonti}
+\bibliographystyle{IEEEtran}
+\newpage
+\vspace*{\fill}
+LATE (Lightweight Airport Testing Environment) by Augusto Colongo is licensed under CC BY-NC-SA 4.0. To view a copy of this license, visit \url{https://creativecommons.org/licenses/by-nc-sa/4.0}.
+
+\begin{center}
+ \includegraphics[width=0.45\textwidth]{resources/images/CC-BY-NC-SA_icon.png}
+\end{center}
+
+\end{document}
+

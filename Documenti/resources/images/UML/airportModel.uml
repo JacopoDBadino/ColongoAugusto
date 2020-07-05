@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>it.polito.tdp.LATE.airportModel</OriginalElement>
+  <nodes>
+    <node x="432.25" y="956.0">it.polito.tdp.LATE.airportModel.TrafficFlow</node>
+    <node x="234.0" y="0.0">it.polito.tdp.LATE.airportModel.TaxiRoutingNode.TaxiRoutingNodeType</node>
+    <node x="215.55676406926403" y="237.0">it.polito.tdp.LATE.airportModel.TaxiRoutingNode</node>
+    <node x="989.3704545454544" y="992.5">it.polito.tdp.LATE.airportModel.TaxiRoutingEdge</node>
+    <node x="403.0" y="644.0">it.polito.tdp.LATE.airportModel.TrafficFlow.TrafficFlowType</node>
+    <node x="48.556764069264034" y="644.0">it.polito.tdp.LATE.airportModel.Gate.GateType</node>
+    <node x="0.0" y="920.0">it.polito.tdp.LATE.airportModel.Gate</node>
+    <node x="687.0" y="547.0">it.polito.tdp.LATE.airportModel.Runway</node>
+    <node x="490.9618506493507" y="1250.0">it.polito.tdp.LATE.airportModel.Airport</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="it.polito.tdp.LATE.airportModel.TaxiRoutingNode" target="it.polito.tdp.LATE.airportModel.TaxiRoutingNode.TaxiRoutingNodeType">
+      <point x="-159.33333333333337" y="-125.0" />
+      <point x="295.22343073593066" y="217.0" />
+      <point x="325.8" y="217.0" />
+      <point x="-61.19999999999999" y="88.5" />
+    </edge>
+    <edge source="it.polito.tdp.LATE.airportModel.Airport" target="it.polito.tdp.LATE.airportModel.TaxiRoutingEdge">
+      <point x="185.090909090909" y="-293.0" />
+      <point x="930.5527597402597" y="1220.0" />
+      <point x="1088.8704545454543" y="1220.0" />
+      <point x="0.0" y="52.5" />
+    </edge>
+    <edge source="it.polito.tdp.LATE.airportModel.Airport" target="it.polito.tdp.LATE.airportModel.TaxiRoutingNode">
+      <point x="-92.54545454545462" y="-293.0" />
+      <point x="652.9163961038961" y="1200.0" />
+      <point x="392.5" y="1200.0" />
+      <point x="392.5" y="527.0" />
+      <point x="484.43176406926403" y="527.0" />
+      <point x="29.875" y="125.0" />
+    </edge>
+    <edge source="it.polito.tdp.LATE.airportModel.Airport" target="it.polito.tdp.LATE.airportModel.Gate">
+      <point x="-185.09090909090912" y="-293.0" />
+      <point x="560.3709415584416" y="1220.0" />
+      <point x="278.25" y="1220.0" />
+      <point x="92.75" y="125.0" />
+    </edge>
+    <edge source="it.polito.tdp.LATE.airportModel.Runway" target="it.polito.tdp.LATE.airportModel.TaxiRoutingNode.TaxiRoutingNodeType">
+      <point x="152.2499999999999" y="-161.5" />
+      <point x="1042.25" y="527.0" />
+      <point x="973.8842532467531" y="527.0" />
+      <point x="973.8842532467531" y="197.0" />
+      <point x="509.3999999999999" y="197.0" />
+      <point x="122.39999999999992" y="88.5" />
+    </edge>
+    <edge source="it.polito.tdp.LATE.airportModel.Airport" target="it.polito.tdp.LATE.airportModel.Runway">
+      <point x="46.27272727272711" y="-293.0" />
+      <point x="791.7345779220778" y="1190.0" />
+      <point x="967.8704545454545" y="1190.0" />
+      <point x="967.8704545454545" y="900.0" />
+      <point x="940.75" y="900.0" />
+      <point x="50.75" y="161.5" />
+    </edge>
+    <edge source="it.polito.tdp.LATE.airportModel.Gate" target="it.polito.tdp.LATE.airportModel.TaxiRoutingNode.TaxiRoutingNodeType">
+      <point x="-159.0" y="-125.0" />
+      <point x="26.5" y="900.0" />
+      <point x="38.056764069264034" y="900.0" />
+      <point x="38.056764069264034" y="217.0" />
+      <point x="264.59999999999997" y="217.0" />
+      <point x="-122.40000000000003" y="88.5" />
+    </edge>
+    <edge source="it.polito.tdp.LATE.airportModel.TrafficFlow.TrafficFlowType" target="it.polito.tdp.LATE.airportModel.TrafficFlow">
+      <point x="66.0" y="64.5" />
+      <point x="601.0" y="900.0" />
+      <point x="586.375" y="900.0" />
+      <point x="-51.375" y="-89.0" />
+    </edge>
+    <edge source="it.polito.tdp.LATE.airportModel.TrafficFlow" target="it.polito.tdp.LATE.airportModel.Runway">
+      <point x="51.375" y="-89.0" />
+      <point x="689.125" y="900.0" />
+      <point x="737.75" y="900.0" />
+      <point x="-152.25" y="161.5" />
+    </edge>
+    <edge source="it.polito.tdp.LATE.airportModel.TaxiRoutingNode.TaxiRoutingNodeType" target="it.polito.tdp.LATE.airportModel.TaxiRoutingNode">
+      <point x="61.19999999999999" y="88.5" />
+      <point x="448.2" y="207.0" />
+      <point x="613.8900974025973" y="207.0" />
+      <point x="159.33333333333337" y="-125.0" />
+    </edge>
+    <edge source="it.polito.tdp.LATE.airportModel.TrafficFlow" target="it.polito.tdp.LATE.airportModel.TrafficFlow.TrafficFlowType">
+      <point x="-154.125" y="-89.0" />
+      <point x="483.625" y="900.0" />
+      <point x="469.0" y="900.0" />
+      <point x="-66.0" y="64.5" />
+    </edge>
+    <edge source="it.polito.tdp.LATE.airportModel.Runway" target="it.polito.tdp.LATE.airportModel.TaxiRoutingNode">
+      <point x="50.749999999999886" y="-161.5" />
+      <point x="940.7499999999999" y="507.0" />
+      <point x="663.6817640692641" y="507.0" />
+      <point x="209.125" y="125.0" />
+    </edge>
+    <edge source="it.polito.tdp.LATE.airportModel.Airport" target="it.polito.tdp.LATE.airportModel.TrafficFlow">
+      <point x="-1.1368683772161603E-13" y="-293.0" />
+      <point x="745.4618506493506" y="1230.0" />
+      <point x="740.5" y="1230.0" />
+      <point x="102.75" y="89.0" />
+    </edge>
+    <edge source="it.polito.tdp.LATE.airportModel.Gate" target="it.polito.tdp.LATE.airportModel.Gate.GateType">
+      <point x="-53.0" y="-125.0" />
+      <point x="132.5" y="900.0" />
+      <point x="157.55676406926403" y="900.0" />
+      <point x="1.4210854715202004E-14" y="64.5" />
+    </edge>
+    <edge source="it.polito.tdp.LATE.airportModel.Gate" target="it.polito.tdp.LATE.airportModel.TaxiRoutingNode">
+      <point x="53.0" y="-125.0" />
+      <point x="238.5" y="890.0" />
+      <point x="288.87045454545455" y="890.0" />
+      <point x="288.87045454545455" y="527.0" />
+      <point x="245.43176406926403" y="527.0" />
+      <point x="-209.125" y="125.0" />
+    </edge>
+    <edge source="it.polito.tdp.LATE.airportModel.Gate.GateType" target="it.polito.tdp.LATE.airportModel.Gate">
+      <point x="72.66666666666669" y="64.5" />
+      <point x="230.22343073593072" y="900.0" />
+      <point x="185.5" y="900.0" />
+      <point x="0.0" y="-125.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.8" x="455.125" y="345.875" />
+  <SelectedNodes>
+    <node>it.polito.tdp.LATE.airportModel.TrafficFlow</node>
+    <node>it.polito.tdp.LATE.airportModel.TaxiRoutingNode</node>
+    <node>it.polito.tdp.LATE.airportModel.TaxiRoutingEdge</node>
+    <node>it.polito.tdp.LATE.airportModel.Gate</node>
+    <node>it.polito.tdp.LATE.airportModel.Runway</node>
+    <node>it.polito.tdp.LATE.airportModel.Airport</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

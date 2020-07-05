@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>it.polito.tdp.LATE.planeModel</OriginalElement>
+  <nodes>
+    <node x="0.0" y="625.5">it.polito.tdp.LATE.planeModel.TablePlane</node>
+    <node x="149.5" y="0.0">it.polito.tdp.LATE.planeModel.Plane</node>
+    <node x="37.16250000000002" y="1033.0">it.polito.tdp.LATE.planeModel.TablePlane.ReverseMTOWComparator</node>
+    <node x="413.0" y="397.0">it.polito.tdp.LATE.planeModel.Flight</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="it.polito.tdp.LATE.planeModel.Flight" target="it.polito.tdp.LATE.planeModel.Plane">
+      <point x="-85.0" y="-293.0" />
+      <point x="498.0" y="377.0" />
+      <point x="398.69999999999993" y="377.0" />
+      <point x="71.19999999999993" y="173.5" />
+    </edge>
+    <edge source="it.polito.tdp.LATE.planeModel.TablePlane.ReverseMTOWComparator" target="it.polito.tdp.LATE.planeModel.TablePlane">
+      <point x="74.5" y="-28.0" />
+      <point x="260.6625" y="1008.0" />
+      <point x="294.75" y="1008.0" />
+      <point x="98.25" y="64.5" />
+    </edge>
+    <edge source="it.polito.tdp.LATE.planeModel.TablePlane" target="it.polito.tdp.LATE.planeModel.Plane">
+      <point x="131.0" y="-64.5" />
+      <point x="0.0" y="173.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.8" x="442.9583333333328" y="151.875" />
+  <SelectedNodes>
+    <node>it.polito.tdp.LATE.planeModel.TablePlane</node>
+    <node>it.polito.tdp.LATE.planeModel.Plane</node>
+    <node>it.polito.tdp.LATE.planeModel.Flight</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

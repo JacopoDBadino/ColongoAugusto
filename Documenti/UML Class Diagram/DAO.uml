@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>it.polito.tdp.LATE.DAO</OriginalElement>
+  <nodes>
+    <node x="0.0" y="155.0">it.polito.tdp.LATE.DAO.AirportSimDAO</node>
+    <node x="68.0" y="285.0">it.polito.tdp.LATE.DAO.TestDAO</node>
+    <node x="35.5" y="0.0">it.polito.tdp.LATE.DAO.ConnectDB</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="it.polito.tdp.LATE.DAO.AirportSimDAO" target="it.polito.tdp.LATE.DAO.ConnectDB">
+      <point x="0.0" y="-40.0" />
+      <point x="0.0" y="52.5" />
+    </edge>
+    <edge source="it.polito.tdp.LATE.DAO.TestDAO" target="it.polito.tdp.LATE.DAO.AirportSimDAO">
+      <point x="0.0" y="-28.0" />
+      <point x="0.0" y="40.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="76.0" y="126.0" />
+  <SelectedNodes>
+    <node>it.polito.tdp.LATE.DAO.AirportSimDAO</node>
+    <node>it.polito.tdp.LATE.DAO.TestDAO</node>
+    <node>it.polito.tdp.LATE.DAO.ConnectDB</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Methods</Category>
+    <Category>Constructors</Category>
+    <Category>Inner Classes</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>Project Files</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
