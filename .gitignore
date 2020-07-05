@@ -36,3 +36,4 @@ hs_err_pid*
 /Documenti/*.toc
 /Documenti/*.lot
 /Documenti/*/*.aux
+/Documenti/resources/images/*.pdf
